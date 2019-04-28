@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as bookActions from '../../redux/actions/bookActions';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 
 class LibraryPage extends React.Component {
 
@@ -23,7 +24,7 @@ class LibraryPage extends React.Component {
     handleSubmit = event => {
         event.preventDefault();
         debugger;
-        this.props.dispatch(bookActions.createBook(this.state.book))
+        this.props.actions.createBook((this.state.book));
 
     };
 
@@ -52,19 +53,28 @@ class LibraryPage extends React.Component {
 }
 LibraryPage.propTypes = {
     books: PropTypes.array.isRequired,
-    dispatch: PropTypes.func.isRequired
+    actions: PropTypes.object.isRequired
 };
 
 //This functions determins what part of the state we expose the component
 function mapStateToProps(state) {
-    debugger;
+
     return {
         books: state.books
     };
 }
+
+function mapDispatchToProps(dispatch) {
+    //The action we choose to return here will be available within our component on props 
+    return {
+        //wrapping an action in a call to dispatch and we call bookActions.createBook
+        actions: bindActionCreators(bookActions, dispatch)
+    };
+}
+
 //instead of exporting our plain LibraryPage component
 // we're going to decorate our component using connect. 
-export default connect(mapStateToProps)(LibraryPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LibraryPage);
 //export default LibraryPage;
 
 //As the first argument passed in to connect, mapStateToProps is used for selecting the part of
